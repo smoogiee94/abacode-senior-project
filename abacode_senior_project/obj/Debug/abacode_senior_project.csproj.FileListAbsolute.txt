@@ -7,3 +7,6 @@ d:\files\documents\visual studio 2015\Projects\abacode_senior_project\abacode_se
 d:\files\documents\visual studio 2015\Projects\abacode_senior_project\abacode_senior_project\obj\Debug\abacode_senior_project.csproj.GenerateResource.Cache
 d:\files\documents\visual studio 2015\Projects\abacode_senior_project\abacode_senior_project\obj\Debug\abacode_senior_project.exe
 d:\files\documents\visual studio 2015\Projects\abacode_senior_project\abacode_senior_project\obj\Debug\abacode_senior_project.pdb
+D:\Files\Documents\Visual Studio 2015\Projects\abacode_senior_project\abacode_senior_project\bin\Debug\DocumentFormat.OpenXml.dll
+D:\Files\Documents\Visual Studio 2015\Projects\abacode_senior_project\abacode_senior_project\bin\Debug\DocumentFormat.OpenXml.xml
+D:\Files\Documents\Visual Studio 2015\Projects\abacode_senior_project\abacode_senior_project\obj\Debug\abacode_senior_project.csproj.ResolveComReference.cache
