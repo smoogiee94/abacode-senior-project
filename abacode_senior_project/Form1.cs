@@ -46,6 +46,7 @@ namespace abacode_senior_project
 
         private void startButton_Click(object sender, EventArgs e)
         {
+            this.Cursor = Cursors.WaitCursor;
             //-------------------------
             //openVAS Report Parsing
             //-------------------------
@@ -228,6 +229,8 @@ namespace abacode_senior_project
             {
 
             }
+            this.Cursor = Cursors.Default;
+            MessageBox.Show("Done parsing file.");
         }
     }
 }
