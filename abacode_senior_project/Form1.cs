@@ -26,7 +26,6 @@ namespace abacode_senior_project
 
         private void browseButton_Click(object sender, EventArgs e)
         {
-            Stream inputStream = null;
             //-----------------------------------
             // Create a Windows Open File Dialog
             // and sets the correct values
@@ -106,6 +105,8 @@ namespace abacode_senior_project
                              *
                              */
 
+                            SortedDictionary<int, List<List<String>>> vulnerabilities = new SortedDictionary<int, List<List<String>>>();
+                            List<String> vulnerabilityInformation;
                             Excel.Range usedRange = convertedCSVWorksheet.UsedRange;
                             for (int i = 0; i < usedRange.Rows.Count; ++i)
                             {
@@ -118,11 +119,75 @@ namespace abacode_senior_project
                                 }
                                 else
                                 {
-//                                    MessageBox.Show(usedRange.Rows.Cells[i + 1, 1].Value.ToString());
+                                    //------------------------------------
+                                    // Create new list object to hold the
+                                    // vulnerability information
+                                    //------------------------------------
+                                    vulnerabilityInformation = new List<String>();
+
+                                    //--------------------------------------------
+                                    // Iterate from cells 2-13 to gather 
+                                    // vulnerability information from report
+                                    //--------------------------------------------
+                                    for (int j = 0; j < 13; ++j)
+                                    {
+                                        vulnerabilityInformation.Add(Convert.ToString(usedRange.Rows.Cells[i + 1, j + 1].Value));
+                                    }
+
+                                    //---------------------------------------------
+                                    // Check to see if the current vulnerability
+                                    // is in the map. If it is, add to the list
+                                    // of that certain key
+                                    //---------------------------------------------
+                                    if (vulnerabilities.ContainsKey(Convert.ToInt32(usedRange.Rows.Cells[i + 1, 1].Value))){
+                                        List<List<String>> vulnerabilityInformationCopy = new List<List<String>>();
+                                        if(vulnerabilities.TryGetValue(Convert.ToInt32(usedRange.Rows.Cells[i + 1, 1].Value), out vulnerabilityInformationCopy))
+                                        {
+                                            //Must remove key
+                                            vulnerabilities.Remove(Convert.ToInt32(usedRange.Rows.Cells[i + 1, 1].Value));
+
+                                            //add information to the copy
+                                            vulnerabilityInformationCopy.Add(vulnerabilityInformation);
+
+                                            //add record back
+                                            vulnerabilities.Add(Convert.ToInt32(usedRange.Rows.Cells[i + 1, 1].Value), vulnerabilityInformationCopy);
+                                        }
+                                    }
+                                    //--------------------------------------
+                                    // Else, create a new list<list<string>> 
+                                    // object then add information then
+                                    // add key
+                                    //--------------------------------------
+                                    else
+                                    {
+                                        List<List<String>> vulnerabilityInformationCopy = new List<List<String>>();
+                                        vulnerabilityInformationCopy.Add(vulnerabilityInformation);
+                                        vulnerabilities.Add(Convert.ToInt32(usedRange.Rows.Cells[i + 1, 1].Value), vulnerabilityInformationCopy);
+                                    }
                                 }
                             }
 
-
+                            /*
+                             * 
+                             * Debugging statements. Was used to ensure maps were created correction
+                             * TODO: Delete before final production
+                            List<List<String>> foundVulnerability = new List<List<String>>();
+                            if (vulnerabilities.TryGetValue(Convert.ToInt32(usedRange.Rows.Cells[3, 1].Value), out foundVulnerability))
+                            {
+                                for (int i = 0; i < foundVulnerability.Count; ++i)
+                                {
+                                    List<String> foundVulnerabilityInformation = foundVulnerability.ElementAt(i);
+                                    for (int j = 0; j < foundVulnerabilityInformation.Count; ++j)
+                                    {
+                                        MessageBox.Show(foundVulnerabilityInformation.ElementAt(j));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("No vulnerability of type" + Convert.ToInt32(usedRange.Rows.Cells[3, 1].Value) + "found");
+                            }
+                            */
 
                             //---------------------------------------------------
                             // Close worksheets and workbooks. Release Resources
@@ -135,9 +200,13 @@ namespace abacode_senior_project
                             excelApp.Quit();
                             System.Runtime.InteropServices.Marshal.ReleaseComObject(excelApp);
                         }
-                        catch (Exception err)
+                        catch(Exception err)
                         {
-                            MessageBox.Show("Error encountered: " + err);
+                            MessageBox.Show("Error encountered: could not open file. " + err);
+                            excelWorkbooks.Close();
+                            System.Runtime.InteropServices.Marshal.ReleaseComObject(excelWorkbooks);
+                            excelApp.Quit();
+                            System.Runtime.InteropServices.Marshal.ReleaseComObject(excelApp);
                         }
                     }
 
