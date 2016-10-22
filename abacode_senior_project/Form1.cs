@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.Runtime.InteropServices;
 
 namespace abacode_senior_project
 {
@@ -50,21 +51,23 @@ namespace abacode_senior_project
             //-------------------------
             //openVAS Report Parsing
             //-------------------------
-            if (openVASRadio.Checked == true)
+            if (NessusRadio.Checked == true)
             {
                 //----------------------------------
                 // Ensure a path has been specified
                 //----------------------------------
                 if (pathTextBox.Text == "")
                 {
-                    MessageBox.Show("Please enter a path to an openVAS file.");
+                    MessageBox.Show("Please enter a path to a Nessus CSV file.");
                 }
                 else
                 {
                     String path = Directory.GetCurrentDirectory();
-                    var excelApp = new Excel.Application();
+                    Excel.Application excelApp = new Excel.Application();
+                    excelApp.Visible = true;
                     excelApp.DisplayAlerts = false;
-                    var excelWorkbooks = excelApp.Workbooks;
+                    Excel.Workbook excelWorkbooks = null;
+                    Excel.Workbook pivotTableTemplate = null;
                     
 
                     //-------------------------
@@ -73,22 +76,27 @@ namespace abacode_senior_project
                     if (Path.GetExtension(pathTextBox.Text).Equals(".csv"))
                     {
                         //-------------------------------------------------
+                        // copy initial template for pivot table
+                        //-------------------------------------------------
+                        File.Copy("template.xlsx", pathTextBox.Text + "-parsedNessus.xlsx", true);
+                        //-------------------------------------------------
                         // This opens the csv file and converts it to xlsx
                         // Saves it in the specified path in the text box
                         //-------------------------------------------------
                         try
                         {
-                            excelWorkbooks.OpenText(pathTextBox.Text,
-                                    DataType: Excel.XlTextParsingType.xlDelimited,
-                                    TextQualifier: Excel.XlTextQualifier.xlTextQualifierNone,
-                                    ConsecutiveDelimiter: true,
-                                    Semicolon: true);
+                            /*  excelWorkbooks.OpenText(pathTextBox.Text,
+                                      DataType: Excel.XlTextParsingType.xlDelimited,
+                                      TextQualifier: Excel.XlTextQualifier.xlTextQualifierNone,
+                                      ConsecutiveDelimiter: true,
+                                      Semicolon: true);*/
+                            excelWorkbooks = excelApp.Workbooks.Open(pathTextBox.Text);
 
-                            excelWorkbooks[1].SaveAs(pathTextBox.Text + ".xlsx", FileFormat: Microsoft.Office.Interop.Excel.XlFileFormat.xlOpenXMLWorkbook);
-                            excelWorkbooks[1].Close(); //closes first workbook
+                            excelWorkbooks.SaveAs(pathTextBox.Text + ".xlsx", FileFormat: Microsoft.Office.Interop.Excel.XlFileFormat.xlOpenXMLWorkbook);
+                            excelWorkbooks.Close(); //closes first workbook
 
-                            
-                            Excel._Worksheet convertedCSVWorksheet = excelWorkbooks.OpenXML(pathTextBox.Text + ".xlsx").ActiveSheet; //opens another workbook on index 1
+                            excelWorkbooks = excelApp.Workbooks.Open(pathTextBox.Text + ".xlsx");
+                            Excel._Worksheet convertedCSVWorksheet = excelWorkbooks.ActiveSheet; //opens another workbook on index 1
 
 
 
@@ -190,13 +198,120 @@ namespace abacode_senior_project
                             }
                             */
 
+                            /*
+                             * transfer all the information
+                             * into the excel pivot table
+                             */
+                             
+                            
+                            pivotTableTemplate = excelApp.Workbooks.Open(pathTextBox.Text + "-parsedNessus.xlsx");
+                            Excel._Worksheet pivotTableData = pivotTableTemplate.Sheets[2];
+                            
+
+                            for (int i = 0; i < usedRange.Rows.Count; ++i)
+                            {
+                                if (i == 0)
+                                {
+                                    continue;
+                                }
+                                else
+                                {
+                                    //ID
+                                    pivotTableData.Cells[i + 8, 1] = convertedCSVWorksheet.Cells[i + 1, 1];
+
+                                    //IP
+                                    pivotTableData.Cells[i + 8, 2] = convertedCSVWorksheet.Cells[i + 1, 5];
+
+                                    //Hostname
+                                    //No host name in nessus csv
+
+                                    //Operating System
+                                    //No operating system field in nessus csv
+
+                                    //Vulnerability Name
+                                    pivotTableData.Cells[i + 8, 5] = convertedCSVWorksheet.Cells[i + 1, 8];
+
+                                    //Risk and Severity
+                                    if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 4].Value).Equals("None") || Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 4].Value).Equals("Info"))
+                                    {
+                                        pivotTableData.Cells[i + 8, 6] = "Info";
+                                        pivotTableData.Cells[i + 8, 7] = "0";
+                                    }
+                                    if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 4].Value).Equals("Low"))
+                                    {
+                                        pivotTableData.Cells[i + 8, 6] = "Low";
+                                        pivotTableData.Cells[i + 8, 7] = "1";
+                                    }
+                                    if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 4].Value).Equals("Medium"))
+                                    {
+                                        pivotTableData.Cells[i + 8, 6] = "Medium";
+                                        pivotTableData.Cells[i + 8, 7] = "2";
+                                    }
+                                    if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 4].Value).Equals("High"))
+                                    {
+                                        pivotTableData.Cells[i + 8, 6] = "High";
+                                        pivotTableData.Cells[i + 8, 7] = "3";
+                                    }
+                                    if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 4].Value).Equals("Critical") || Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 4].Value).Equals("Severe"))
+                                    {
+                                        pivotTableData.Cells[i + 8, 6] = "Critical";
+                                        pivotTableData.Cells[i + 8, 7] = "4";
+                                    }
+
+                                    //Service
+                                    //No service field in nessus csv
+
+                                    //Protocol
+                                    pivotTableData.Cells[i + 8, 9] = convertedCSVWorksheet.Cells[i + 1, 6];
+
+                                    //Port
+                                    if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value).Equals("0"))
+                                    {
+                                        pivotTableData.Cells[i + 8, 10] = "---";
+                                    }
+                                    else
+                                    {
+                                        pivotTableData.Cells[i + 8, 10] = convertedCSVWorksheet.Cells[i + 1, 7];
+                                    }
+
+                                    //Vulnerability description
+                                    pivotTableData.Cells[i + 8, 11] = convertedCSVWorksheet.Cells[i + 1, 10];
+
+                                    //Remediation
+                                    pivotTableData.Cells[i + 8, 12] = convertedCSVWorksheet.Cells[i + 1, 11];
+
+                                    //Results
+                                    //No results field in nessus csv
+
+                                    //Exploit available
+                                    //Need to do this with web scraping
+
+                                    //Vuln Publish Date
+                                    //Web scrape this information as well
+
+                                    //Patch Publish Date
+                                    //Web scrap this
+
+                                    //See Also
+                                    pivotTableData.Cells[i + 8, 17] = convertedCSVWorksheet.Cells[i + 1, 12];
+
+                                    //CVSS SCORE
+                                    pivotTableData.Cells[i + 8, 18] = convertedCSVWorksheet.Cells[i + 1, 3];
+
+                                    //CVSS vector
+                                    //Web scrap this
+
+                                    //CVE
+                                    pivotTableData.Cells[i + 8, 20] = convertedCSVWorksheet.Cells[i + 1, 2];
+                                }
+                            }
                             //---------------------------------------------------
                             // Close worksheets and workbooks. Release Resources
                             // and close excel
                             //---------------------------------------------------
                             System.Runtime.InteropServices.Marshal.ReleaseComObject(convertedCSVWorksheet);
-                            excelWorkbooks[1].Close();
-                            excelWorkbooks.Close();
+                            excelWorkbooks.Close(false);
+                            pivotTableTemplate.Close(true);
                             System.Runtime.InteropServices.Marshal.ReleaseComObject(excelWorkbooks);
                             excelApp.Quit();
                             System.Runtime.InteropServices.Marshal.ReleaseComObject(excelApp);
@@ -204,7 +319,10 @@ namespace abacode_senior_project
                         catch(Exception err)
                         {
                             MessageBox.Show("Error encountered: could not open file. " + err);
-                            excelWorkbooks.Close();
+                            if (excelWorkbooks != null)
+                            {
+                                excelWorkbooks.Close();
+                            }
                             System.Runtime.InteropServices.Marshal.ReleaseComObject(excelWorkbooks);
                             excelApp.Quit();
                             System.Runtime.InteropServices.Marshal.ReleaseComObject(excelApp);
@@ -227,7 +345,7 @@ namespace abacode_senior_project
             //-----------------------
             else
             {
-
+                MessageBox.Show("Not implemented yet.");
             }
             this.Cursor = Cursors.Default;
             MessageBox.Show("Done parsing file.");
