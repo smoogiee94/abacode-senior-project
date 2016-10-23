@@ -217,10 +217,10 @@ namespace abacode_senior_project
                                 else
                                 {
                                     //ID
-                                    pivotTableData.Cells[i + 8, 1] = convertedCSVWorksheet.Cells[i + 1, 1];
+                                    pivotTableData.Cells[i + 9, 1] = convertedCSVWorksheet.Cells[i + 1, 1];
 
                                     //IP
-                                    pivotTableData.Cells[i + 8, 2] = convertedCSVWorksheet.Cells[i + 1, 5];
+                                    pivotTableData.Cells[i + 9, 2] = convertedCSVWorksheet.Cells[i + 1, 5];
 
                                     //Hostname
                                     //No host name in nessus csv
@@ -229,56 +229,56 @@ namespace abacode_senior_project
                                     //No operating system field in nessus csv
 
                                     //Vulnerability Name
-                                    pivotTableData.Cells[i + 8, 5] = convertedCSVWorksheet.Cells[i + 1, 8];
+                                    pivotTableData.Cells[i + 9, 5] = convertedCSVWorksheet.Cells[i + 1, 8];
 
                                     //Risk and Severity
                                     if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 4].Value).Equals("None") || Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 4].Value).Equals("Info"))
                                     {
-                                        pivotTableData.Cells[i + 8, 6] = "Info";
-                                        pivotTableData.Cells[i + 8, 7] = "0";
+                                        pivotTableData.Cells[i + 9, 6] = "Info";
+                                        pivotTableData.Cells[i + 9, 7] = "0";
                                     }
                                     if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 4].Value).Equals("Low"))
                                     {
-                                        pivotTableData.Cells[i + 8, 6] = "Low";
-                                        pivotTableData.Cells[i + 8, 7] = "1";
+                                        pivotTableData.Cells[i + 9, 6] = "Low";
+                                        pivotTableData.Cells[i + 9, 7] = "1";
                                     }
                                     if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 4].Value).Equals("Medium"))
                                     {
-                                        pivotTableData.Cells[i + 8, 6] = "Medium";
-                                        pivotTableData.Cells[i + 8, 7] = "2";
+                                        pivotTableData.Cells[i + 9, 6] = "Medium";
+                                        pivotTableData.Cells[i + 9, 7] = "2";
                                     }
                                     if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 4].Value).Equals("High"))
                                     {
-                                        pivotTableData.Cells[i + 8, 6] = "High";
-                                        pivotTableData.Cells[i + 8, 7] = "3";
+                                        pivotTableData.Cells[i + 9, 6] = "High";
+                                        pivotTableData.Cells[i + 9, 7] = "3";
                                     }
                                     if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 4].Value).Equals("Critical") || Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 4].Value).Equals("Severe"))
                                     {
-                                        pivotTableData.Cells[i + 8, 6] = "Critical";
-                                        pivotTableData.Cells[i + 8, 7] = "4";
+                                        pivotTableData.Cells[i + 9, 6] = "Critical";
+                                        pivotTableData.Cells[i + 9, 7] = "4";
                                     }
 
                                     //Service
                                     //No service field in nessus csv
 
                                     //Protocol
-                                    pivotTableData.Cells[i + 8, 9] = convertedCSVWorksheet.Cells[i + 1, 6];
+                                    pivotTableData.Cells[i + 9, 9] = convertedCSVWorksheet.Cells[i + 1, 6];
 
                                     //Port
                                     if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value).Equals("0"))
                                     {
-                                        pivotTableData.Cells[i + 8, 10] = "---";
+                                        pivotTableData.Cells[i + 9, 10] = "---";
                                     }
                                     else
                                     {
-                                        pivotTableData.Cells[i + 8, 10] = convertedCSVWorksheet.Cells[i + 1, 7];
+                                        pivotTableData.Cells[i + 9, 10] = convertedCSVWorksheet.Cells[i + 1, 7];
                                     }
 
                                     //Vulnerability description
-                                    pivotTableData.Cells[i + 8, 11] = convertedCSVWorksheet.Cells[i + 1, 10];
+                                    pivotTableData.Cells[i + 9, 11] = convertedCSVWorksheet.Cells[i + 1, 10];
 
                                     //Remediation
-                                    pivotTableData.Cells[i + 8, 12] = convertedCSVWorksheet.Cells[i + 1, 11];
+                                    pivotTableData.Cells[i + 9, 12] = convertedCSVWorksheet.Cells[i + 1, 11];
 
                                     //Results
                                     //No results field in nessus csv
@@ -293,16 +293,16 @@ namespace abacode_senior_project
                                     //Web scrap this
 
                                     //See Also
-                                    pivotTableData.Cells[i + 8, 17] = convertedCSVWorksheet.Cells[i + 1, 12];
+                                    pivotTableData.Cells[i + 9, 17] = convertedCSVWorksheet.Cells[i + 1, 12];
 
                                     //CVSS SCORE
-                                    pivotTableData.Cells[i + 8, 18] = convertedCSVWorksheet.Cells[i + 1, 3];
+                                    pivotTableData.Cells[i + 9, 18] = convertedCSVWorksheet.Cells[i + 1, 3];
 
                                     //CVSS vector
                                     //Web scrap this
 
                                     //CVE
-                                    pivotTableData.Cells[i + 8, 20] = convertedCSVWorksheet.Cells[i + 1, 2];
+                                    pivotTableData.Cells[i + 9, 20] = convertedCSVWorksheet.Cells[i + 1, 2];
                                 }
                             }
                             //---------------------------------------------------
