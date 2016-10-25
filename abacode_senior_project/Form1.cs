@@ -315,6 +315,7 @@ namespace abacode_senior_project
                             System.Runtime.InteropServices.Marshal.ReleaseComObject(excelWorkbooks);
                             excelApp.Quit();
                             System.Runtime.InteropServices.Marshal.ReleaseComObject(excelApp);
+                            MessageBox.Show("Done parsing file.");
                         }
                         catch(Exception err)
                         {
@@ -331,6 +332,13 @@ namespace abacode_senior_project
 
                     else
                     {
+                        if (excelWorkbooks != null)
+                        {
+                            excelWorkbooks.Close();
+                            System.Runtime.InteropServices.Marshal.ReleaseComObject(excelWorkbooks);
+                        }
+                        excelApp.Quit();
+                        System.Runtime.InteropServices.Marshal.ReleaseComObject(excelApp);
                         MessageBox.Show("Please select a CSV file.");
                     }
 
@@ -345,10 +353,9 @@ namespace abacode_senior_project
             //-----------------------
             else
             {
-                MessageBox.Show("Not implemented yet.");
+                MessageBox.Show("OpenVAS Parsing is not implemented yet.");
             }
             this.Cursor = Cursors.Default;
-            MessageBox.Show("Done parsing file.");
         }
     }
 }
