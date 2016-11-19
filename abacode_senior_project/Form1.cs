@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace abacode_senior_project
 {
@@ -85,6 +86,10 @@ namespace abacode_senior_project
                         //-------------------------------------------------
                         try
                         {
+                            //start timer for time analysis
+                            Stopwatch stopwatch = new Stopwatch();
+                            stopwatch.Start();
+
                             /*  excelWorkbooks.OpenText(pathTextBox.Text,
                                       DataType: Excel.XlTextParsingType.xlDelimited,
                                       TextQualifier: Excel.XlTextQualifier.xlTextQualifierNone,
@@ -114,67 +119,67 @@ namespace abacode_senior_project
                              *
                              */
 
-                            SortedDictionary<int, List<List<String>>> vulnerabilities = new SortedDictionary<int, List<List<String>>>();
-                            List<String> vulnerabilityInformation;
                             Excel.Range usedRange = convertedCSVWorksheet.UsedRange;
-                            for (int i = 0; i < usedRange.Rows.Count; ++i)
-                            {
-                                //---------------------------
-                                // Skip first row of headers
-                                //---------------------------
-                                if (i == 0)
-                                {
-                                    continue;
-                                }
-                                else
-                                {
-                                    //------------------------------------
-                                    // Create new list object to hold the
-                                    // vulnerability information
-                                    //------------------------------------
-                                    vulnerabilityInformation = new List<String>();
+                            /*  SortedDictionary<int, List<List<String>>> vulnerabilities = new SortedDictionary<int, List<List<String>>>();
+                              List<String> vulnerabilityInformation;
+                              for (int i = 0; i < usedRange.Rows.Count; ++i)
+                              {
+                                  //---------------------------
+                                  // Skip first row of headers
+                                  //---------------------------
+                                  if (i == 0)
+                                  {
+                                      continue;
+                                  }
+                                  else
+                                  {
+                                      //------------------------------------
+                                      // Create new list object to hold the
+                                      // vulnerability information
+                                      //------------------------------------
+                                      vulnerabilityInformation = new List<String>();
 
-                                    //--------------------------------------------
-                                    // Iterate from cells 2-13 to gather 
-                                    // vulnerability information from report
-                                    //--------------------------------------------
-                                    for (int j = 0; j < 13; ++j)
-                                    {
-                                        vulnerabilityInformation.Add(Convert.ToString(usedRange.Rows.Cells[i + 1, j + 1].Value));
-                                    }
+                                      //--------------------------------------------
+                                      // Iterate from cells 2-13 to gather 
+                                      // vulnerability information from report
+                                      //--------------------------------------------
+                                      for (int j = 0; j < 13; ++j)
+                                      {
+                                          vulnerabilityInformation.Add(Convert.ToString(usedRange.Rows.Cells[i + 1, j + 1].Value));
+                                      }
 
-                                    //---------------------------------------------
-                                    // Check to see if the current vulnerability
-                                    // is in the map. If it is, add to the list
-                                    // of that certain key
-                                    //---------------------------------------------
-                                    if (vulnerabilities.ContainsKey(Convert.ToInt32(usedRange.Rows.Cells[i + 1, 1].Value))){
-                                        List<List<String>> vulnerabilityInformationCopy = new List<List<String>>();
-                                        if(vulnerabilities.TryGetValue(Convert.ToInt32(usedRange.Rows.Cells[i + 1, 1].Value), out vulnerabilityInformationCopy))
-                                        {
-                                            //Must remove key
-                                            vulnerabilities.Remove(Convert.ToInt32(usedRange.Rows.Cells[i + 1, 1].Value));
+                                      //---------------------------------------------
+                                      // Check to see if the current vulnerability
+                                      // is in the map. If it is, add to the list
+                                      // of that certain key
+                                      //---------------------------------------------
+                                      if (vulnerabilities.ContainsKey(Convert.ToInt32(usedRange.Rows.Cells[i + 1, 1].Value))){
+                                          List<List<String>> vulnerabilityInformationCopy = new List<List<String>>();
+                                          if(vulnerabilities.TryGetValue(Convert.ToInt32(usedRange.Rows.Cells[i + 1, 1].Value), out vulnerabilityInformationCopy))
+                                          {
+                                              //Must remove key
+                                              vulnerabilities.Remove(Convert.ToInt32(usedRange.Rows.Cells[i + 1, 1].Value));
 
-                                            //add information to the copy
-                                            vulnerabilityInformationCopy.Add(vulnerabilityInformation);
+                                              //add information to the copy
+                                              vulnerabilityInformationCopy.Add(vulnerabilityInformation);
 
-                                            //add record back
-                                            vulnerabilities.Add(Convert.ToInt32(usedRange.Rows.Cells[i + 1, 1].Value), vulnerabilityInformationCopy);
-                                        }
-                                    }
-                                    //--------------------------------------
-                                    // Else, create a new list<list<string>> 
-                                    // object then add information then
-                                    // add key
-                                    //--------------------------------------
-                                    else
-                                    {
-                                        List<List<String>> vulnerabilityInformationCopy = new List<List<String>>();
-                                        vulnerabilityInformationCopy.Add(vulnerabilityInformation);
-                                        vulnerabilities.Add(Convert.ToInt32(usedRange.Rows.Cells[i + 1, 1].Value), vulnerabilityInformationCopy);
-                                    }
-                                }
-                            }
+                                              //add record back
+                                              vulnerabilities.Add(Convert.ToInt32(usedRange.Rows.Cells[i + 1, 1].Value), vulnerabilityInformationCopy);
+                                          }
+                                      }
+                                      //--------------------------------------
+                                      // Else, create a new list<list<string>> 
+                                      // object then add information then
+                                      // add key
+                                      //--------------------------------------
+                                      else
+                                      {
+                                          List<List<String>> vulnerabilityInformationCopy = new List<List<String>>();
+                                          vulnerabilityInformationCopy.Add(vulnerabilityInformation);
+                                          vulnerabilities.Add(Convert.ToInt32(usedRange.Rows.Cells[i + 1, 1].Value), vulnerabilityInformationCopy);
+                                      }
+                                  }
+                              }*/
 
                             /*
                              * 
@@ -202,8 +207,8 @@ namespace abacode_senior_project
                              * transfer all the information
                              * into the excel pivot table
                              */
-                             
-                            
+
+
                             pivotTableTemplate = excelApp.Workbooks.Open(pathTextBox.Text + "-parsedNessus.xlsx");
                             Excel._Worksheet pivotTableData = pivotTableTemplate.Sheets[2];
                             
@@ -315,7 +320,19 @@ namespace abacode_senior_project
                             System.Runtime.InteropServices.Marshal.ReleaseComObject(excelWorkbooks);
                             excelApp.Quit();
                             System.Runtime.InteropServices.Marshal.ReleaseComObject(excelApp);
+                            //stop timer
+                            stopwatch.Stop();
+                            TimeSpan timespan = stopwatch.Elapsed;
+                            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+                                                                timespan.Hours,
+                                                                timespan.Minutes,
+                                                                timespan.Seconds,
+                                                                timespan.Milliseconds / 10);
+
+                            MessageBox.Show("Runtime: " + elapsedTime);
                             MessageBox.Show("Done parsing file.");
+
+                            
                         }
                         catch(Exception err)
                         {
