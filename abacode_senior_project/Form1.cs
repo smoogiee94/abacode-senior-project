@@ -37,10 +37,19 @@ namespace abacode_senior_project
             // and sets the correct values
             //-----------------------------------
             OpenFileDialog browseDialog = new OpenFileDialog();
-            browseDialog.InitialDirectory = "c:\\";
-            browseDialog.Filter = "CSV (*.csv)|*.csv|XLSX (*.xlsx)|*.xlsx|All files (*.*)|*.*";
-            browseDialog.RestoreDirectory = true;
+            if (NessusRadio.Checked == true)
+            {
+                browseDialog.InitialDirectory = "c:\\";
+                browseDialog.Filter = "CSV (*.csv)|*.csv|XLSX (*.xlsx)|*.xlsx|All files (*.*)|*.*";
+                browseDialog.RestoreDirectory = true;
+            }
+            else
+            {
+                browseDialog.InitialDirectory = "c:\\";
+                browseDialog.Filter = "XLSX (*.xlsx)|*.xlsx|CSV (*.csv)|*.csv|All files (*.*)|*.*";
+                browseDialog.RestoreDirectory = true;
 
+            }
             //--------------------------------
             // If user hits ok on the dialog
             //--------------------------------
@@ -90,129 +99,22 @@ namespace abacode_senior_project
                         //-------------------------------------------------
                         try
                         {
-                            //start timer for time analysis
-                            Stopwatch stopwatch = new Stopwatch();
-                            stopwatch.Start();
-
-                            /*  excelWorkbooks.OpenText(pathTextBox.Text,
-                                      DataType: Excel.XlTextParsingType.xlDelimited,
-                                      TextQualifier: Excel.XlTextQualifier.xlTextQualifierNone,
-                                      ConsecutiveDelimiter: true,
-                                      Semicolon: true);*/
                             excelWorkbooks = excelApp.Workbooks.Open(pathTextBox.Text);
 
                             excelWorkbooks.SaveAs(pathTextBox.Text + ".xlsx", FileFormat: Microsoft.Office.Interop.Excel.XlFileFormat.xlOpenXMLWorkbook);
-                            excelWorkbooks.Close(); //closes first workbook
+                            excelWorkbooks.Close();
 
                             excelWorkbooks = excelApp.Workbooks.Open(pathTextBox.Text + ".xlsx");
-                            Excel._Worksheet convertedCSVWorksheet = excelWorkbooks.ActiveSheet; //opens another workbook on index 1
+                            Excel._Worksheet convertedCSVWorksheet = excelWorkbooks.ActiveSheet;
 
-
-
-
-                            //--------------------------------------
-                            // File is now opened and ready. We must
-                            // Now create a map and store all values
-                            // for a vulnerability. Vulnerabilities
-                            // are found by Plugin ID value
-                            //--------------------------------------
-                            /*
-                             * Note: Use SortedDictionary with <int, List<String[]>> as the map
-                             * Thus, we can use the Plugin ID and find all vulnerabilities
-                             * of a given vulnerability
-                             *
-                             */
-
+                            //Get range to use for loops
                             Excel.Range usedRange = convertedCSVWorksheet.UsedRange;
-                            /*  SortedDictionary<int, List<List<String>>> vulnerabilities = new SortedDictionary<int, List<List<String>>>();
-                              List<String> vulnerabilityInformation;
-                              for (int i = 0; i < usedRange.Rows.Count; ++i)
-                              {
-                                  //---------------------------
-                                  // Skip first row of headers
-                                  //---------------------------
-                                  if (i == 0)
-                                  {
-                                      continue;
-                                  }
-                                  else
-                                  {
-                                      //------------------------------------
-                                      // Create new list object to hold the
-                                      // vulnerability information
-                                      //------------------------------------
-                                      vulnerabilityInformation = new List<String>();
-
-                                      //--------------------------------------------
-                                      // Iterate from cells 2-13 to gather 
-                                      // vulnerability information from report
-                                      //--------------------------------------------
-                                      for (int j = 0; j < 13; ++j)
-                                      {
-                                          vulnerabilityInformation.Add(Convert.ToString(usedRange.Rows.Cells[i + 1, j + 1].Value));
-                                      }
-
-                                      //---------------------------------------------
-                                      // Check to see if the current vulnerability
-                                      // is in the map. If it is, add to the list
-                                      // of that certain key
-                                      //---------------------------------------------
-                                      if (vulnerabilities.ContainsKey(Convert.ToInt32(usedRange.Rows.Cells[i + 1, 1].Value))){
-                                          List<List<String>> vulnerabilityInformationCopy = new List<List<String>>();
-                                          if(vulnerabilities.TryGetValue(Convert.ToInt32(usedRange.Rows.Cells[i + 1, 1].Value), out vulnerabilityInformationCopy))
-                                          {
-                                              //Must remove key
-                                              vulnerabilities.Remove(Convert.ToInt32(usedRange.Rows.Cells[i + 1, 1].Value));
-
-                                              //add information to the copy
-                                              vulnerabilityInformationCopy.Add(vulnerabilityInformation);
-
-                                              //add record back
-                                              vulnerabilities.Add(Convert.ToInt32(usedRange.Rows.Cells[i + 1, 1].Value), vulnerabilityInformationCopy);
-                                          }
-                                      }
-                                      //--------------------------------------
-                                      // Else, create a new list<list<string>> 
-                                      // object then add information then
-                                      // add key
-                                      //--------------------------------------
-                                      else
-                                      {
-                                          List<List<String>> vulnerabilityInformationCopy = new List<List<String>>();
-                                          vulnerabilityInformationCopy.Add(vulnerabilityInformation);
-                                          vulnerabilities.Add(Convert.ToInt32(usedRange.Rows.Cells[i + 1, 1].Value), vulnerabilityInformationCopy);
-                                      }
-                                  }
-                              }*/
-
-                            /*
-                             * 
-                             * Debugging statements. Was used to ensure maps were created correction
-                             * TODO: Delete before final production
-                            List<List<String>> foundVulnerability = new List<List<String>>();
-                            if (vulnerabilities.TryGetValue(Convert.ToInt32(usedRange.Rows.Cells[3, 1].Value), out foundVulnerability))
-                            {
-                                for (int i = 0; i < foundVulnerability.Count; ++i)
-                                {
-                                    List<String> foundVulnerabilityInformation = foundVulnerability.ElementAt(i);
-                                    for (int j = 0; j < foundVulnerabilityInformation.Count; ++j)
-                                    {
-                                        MessageBox.Show(foundVulnerabilityInformation.ElementAt(j));
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                MessageBox.Show("No vulnerability of type" + Convert.ToInt32(usedRange.Rows.Cells[3, 1].Value) + "found");
-                            }
-                            */
-
+                            
+                            
                             /*
                              * transfer all the information
                              * into the excel pivot table
                              */
-
-
                             pivotTableTemplate = excelApp.Workbooks.Open(pathTextBox.Text + "-parsedNessus.xlsx");
                             Excel._Worksheet pivotTableData = pivotTableTemplate.Sheets[2];
 
@@ -280,10 +182,7 @@ namespace abacode_senior_project
                                     //Remediation
                                     pivotTableData.Cells[i + 9, 9] = convertedCSVWorksheet.Cells[i + 1, 11];
 
-                                    //Results
-                                    //No results field in nessus csv
-
-                                    //cvss vector 19
+                                    //cvss vector, exploit available, and vulnerability publish date
                                     if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 2].Value) != null && !(Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 2].Value).Equals("-")))
                                     {
                                         String[] cve = Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 2].Value).Split(','); //must do in openvas due to csv cve
@@ -301,7 +200,6 @@ namespace abacode_senior_project
                                         if (vulnDateStartIndex != -1)
                                         {
                                             string stringVulndDate = content.Substring(vulnDateStartIndex, vulnDateEndIndex);
-                                            Console.WriteLine(stringVulndDate);
                                             pivotTableData.Cells[i + 9, 11] = stringVulndDate;
                                         }
                                         if (CVSSVectorStartIndex != -1)
@@ -311,26 +209,18 @@ namespace abacode_senior_project
                                         }
                                         IE.Quit();
                                     }
+
                                     //Exploit available
-                                    //Need to do this with web scraping
                                     if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 2].Value) != null)
                                     {
                                         pivotTableData.Cells[i + 9, 10] = "Exploit is available.";
                                     }
-                                    //Vuln Publish Date
-                                    //Web scrape this information as well
-
-                                    //Patch Publish Date
-                                    //Web scrap this
 
                                     //See Also
                                     pivotTableData.Cells[i + 9, 13] = convertedCSVWorksheet.Cells[i + 1, 12];
 
                                     //CVSS SCORE
                                     pivotTableData.Cells[i + 9, 14] = convertedCSVWorksheet.Cells[i + 1, 3];
-
-                                    //CVSS vector
-                                    //Web scrap this
 
                                     //CVE
                                     pivotTableData.Cells[i + 9, 16] = convertedCSVWorksheet.Cells[i + 1, 2];
@@ -346,16 +236,6 @@ namespace abacode_senior_project
                             System.Runtime.InteropServices.Marshal.ReleaseComObject(excelWorkbooks);
                             excelApp.Quit();
                             System.Runtime.InteropServices.Marshal.ReleaseComObject(excelApp);
-                            //stop timer
-                            stopwatch.Stop();
-                            TimeSpan timespan = stopwatch.Elapsed;
-                            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-                                                                timespan.Hours,
-                                                                timespan.Minutes,
-                                                                timespan.Seconds,
-                                                                timespan.Milliseconds / 10);
-
-                            MessageBox.Show("Runtime: " + elapsedTime);
                             MessageBox.Show("Done parsing file.");
 
 
@@ -432,21 +312,11 @@ namespace abacode_senior_project
                             Excel._Worksheet convertedCSVWorksheet = excelWorkbooks.ActiveSheet; //opens another workbook on index 1
 
 
-
-
-                            //--------------------------------------
-                            // File is now opened and ready. We must
-                            // Now create a map and store all values
-                            // for a vulnerability. Vulnerabilities
-                            // are found by Plugin ID value
-                            //--------------------------------------
                             /*
-                             * Note: Use SortedDictionary with <int, List<String[]>> as the map
-                             * Thus, we can use the Plugin ID and find all vulnerabilities
-                             * of a given vulnerability
-                             *
-                             */
-
+                             * Getting range and iterating through
+                             * the open file to get information
+                             * for report
+                            */
                             Excel.Range usedRange = convertedCSVWorksheet.UsedRange;
                             pivotTableTemplate = excelApp.Workbooks.Open(pathTextBox.Text + "-parsedOpenVAS.xlsx");
                             Excel._Worksheet pivotTableData = pivotTableTemplate.Sheets[2];
@@ -558,7 +428,6 @@ namespace abacode_senior_project
                                         if (vulnDateStartIndex != -1)
                                         {
                                             string stringVulndDate = content.Substring(vulnDateStartIndex, vulnDateEndIndex);
-                                            Console.WriteLine(stringVulndDate);
                                             pivotTableData.Cells[i + 4, 15] = stringVulndDate;
                                         }
                                         if (CVSSVectorStartIndex != -1)
@@ -609,6 +478,7 @@ namespace abacode_senior_project
                             System.Runtime.InteropServices.Marshal.ReleaseComObject(excelWorkbooks);
                             excelApp.Quit();
                             System.Runtime.InteropServices.Marshal.ReleaseComObject(excelApp);
+                            MessageBox.Show("Done parsing file.");
                         }
                         catch(Exception err)
                         {
@@ -621,6 +491,17 @@ namespace abacode_senior_project
                             excelApp.Quit();
                             System.Runtime.InteropServices.Marshal.ReleaseComObject(excelApp);
                         }
+                    }
+                    else
+                    {
+                        if (excelWorkbooks != null)
+                        {
+                            excelWorkbooks.Close();
+                            System.Runtime.InteropServices.Marshal.ReleaseComObject(excelWorkbooks);
+                        }
+                        excelApp.Quit();
+                        System.Runtime.InteropServices.Marshal.ReleaseComObject(excelApp);
+                        MessageBox.Show("Please select a XLSX file.");
                     }
                 }
             }
