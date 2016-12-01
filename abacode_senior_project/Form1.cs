@@ -157,7 +157,7 @@ namespace abacode_senior_project
                                         pivotTableData.Cells[i + 9, 4] = "High";
                                         pivotTableData.Cells[i + 9, 5] = "3";
                                     }
-                                    if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 4].Value).Equals("Critical") || Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 4].Value).Equals("Severe"))
+                                    if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 4].Value).Equals("Critical") || Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 4].Value).Equals("Serious"))
                                     {
                                         pivotTableData.Cells[i + 9, 4] = "Critical";
                                         pivotTableData.Cells[i + 9, 5] = "4";
@@ -175,13 +175,8 @@ namespace abacode_senior_project
                                     {
                                         pivotTableData.Cells[i + 9, 7] = convertedCSVWorksheet.Cells[i + 1, 7];
                                     }
-
-                                    //Vulnerability description
                                     pivotTableData.Cells[i + 9, 8] = convertedCSVWorksheet.Cells[i + 1, 10];
-
-                                    //Remediation
                                     pivotTableData.Cells[i + 9, 9] = convertedCSVWorksheet.Cells[i + 1, 11];
-
                                     //cvss vector, exploit available, and vulnerability publish date
                                     if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 2].Value) != null && !(Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 2].Value).Equals("-")))
                                     {
@@ -190,13 +185,15 @@ namespace abacode_senior_project
                                         SHDocVw.InternetExplorer IE = new SHDocVw.InternetExplorer();
                                         IE.Visible = false;
                                         IE.Navigate(NVDurl);
-                                        System.Threading.Thread.Sleep(1000);
+                                        System.Threading.Thread.Sleep(2000);
                                         mshtml.IHTMLDocument2 htmlDoc = IE.Document as mshtml.IHTMLDocument2;
                                         string content = htmlDoc.body.parentElement.outerHTML;
                                         int CVSSVectorStartIndex = content.IndexOf("(AV", content.IndexOf("(AV") + 1);
                                         int CVSSVectorEndIndex = 28;
                                         int vulnDateStartIndex = content.IndexOf("Original release date:") + 42;
                                         int vulnDateEndIndex = 10;
+                                        pivotTableData.Cells[i + 9, 8] = convertedCSVWorksheet.Cells[i + 1, 10];
+                                        pivotTableData.Cells[i + 9, 9] = convertedCSVWorksheet.Cells[i + 1, 11];
                                         if (vulnDateStartIndex != -1)
                                         {
                                             string stringVulndDate = content.Substring(vulnDateStartIndex, vulnDateEndIndex);
@@ -242,7 +239,7 @@ namespace abacode_senior_project
                         }
                         catch (Exception err)
                         {
-                            MessageBox.Show("Error encountered: could not open file. " + err);
+                            MessageBox.Show("Error encountered. Please try again.");
                             if (excelWorkbooks != null)
                             {
                                 excelWorkbooks.Close();
@@ -346,7 +343,10 @@ namespace abacode_senior_project
                                     }
 
                                     //Vulnerability Name
-                                    pivotTableData.Cells[i + 4, 5] = convertedCSVWorksheet.Cells[i + 1, 8];
+                                    if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 8].Value) != "n/a")
+                                        pivotTableData.Cells[i + 4, 5] = convertedCSVWorksheet.Cells[i + 1, 8];
+                                    else
+                                        pivotTableData.Cells[i + 4, 5] = "Not available.";
 
                                     //Risk Level
                                     if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value).Equals("None") || Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value).Equals("Info"))
@@ -369,7 +369,7 @@ namespace abacode_senior_project
                                         pivotTableData.Cells[i + 4, 6] = "High";
                                         pivotTableData.Cells[i + 4, 7] = "3";
                                     }
-                                    if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value).Equals("Critical") || Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value).Equals("Severe"))
+                                    if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value).Equals("Critical") || Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value).Equals("Serious"))
                                     {
                                         pivotTableData.Cells[i + 4, 6] = "Critical";
                                         pivotTableData.Cells[i + 4, 7] = "4";
@@ -418,7 +418,7 @@ namespace abacode_senior_project
                                         SHDocVw.InternetExplorer IE = new SHDocVw.InternetExplorer();
                                         IE.Visible = false;
                                         IE.Navigate(NVDurl);
-                                        System.Threading.Thread.Sleep(1000);
+                                        System.Threading.Thread.Sleep(2000);
                                         mshtml.IHTMLDocument2 htmlDoc = IE.Document as mshtml.IHTMLDocument2;
                                         string content = htmlDoc.body.parentElement.outerHTML;
                                         int CVSSVectorStartIndex = content.IndexOf("(AV", content.IndexOf("(AV") + 1);
@@ -482,7 +482,7 @@ namespace abacode_senior_project
                         }
                         catch(Exception err)
                         {
-                            MessageBox.Show("Error encountered: could not open file. " + err);
+                            MessageBox.Show("Error encountered. Please try again.");
                             if (excelWorkbooks != null)
                             {
                                 excelWorkbooks.Close();
