@@ -349,30 +349,35 @@ namespace abacode_senior_project
                                         pivotTableData.Cells[i + 4, 5] = "Not available.";
 
                                     //Risk Level
-                                    if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value).Equals("None") || Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value).Equals("Info"))
+                                    if (convertedCSVWorksheet.Cells[i + 1, 7].Value2 != null)
                                     {
-                                        pivotTableData.Cells[i + 4, 6] = "Info";
-                                        pivotTableData.Cells[i + 4, 7] = "0";
-                                    }
-                                    if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value).Equals("Low"))
-                                    {
-                                        pivotTableData.Cells[i + 4, 6] = "Low";
-                                        pivotTableData.Cells[i + 4, 7] = "1";
-                                    }
-                                    if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value).Equals("Medium"))
-                                    {
-                                        pivotTableData.Cells[i + 4, 6] = "Medium";
-                                        pivotTableData.Cells[i + 4, 7] = "2";
-                                    }
-                                    if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value).Equals("High"))
-                                    {
-                                        pivotTableData.Cells[i + 4, 6] = "High";
-                                        pivotTableData.Cells[i + 4, 7] = "3";
-                                    }
-                                    if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value).Equals("Critical") || Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value).Equals("Serious"))
-                                    {
-                                        pivotTableData.Cells[i + 4, 6] = "Critical";
-                                        pivotTableData.Cells[i + 4, 7] = "4";
+
+
+                                        if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value2).Equals("None") || Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value2).Equals("Info"))
+                                        {
+                                            pivotTableData.Cells[i + 4, 6] = "Info";
+                                            pivotTableData.Cells[i + 4, 7] = "0";
+                                        }
+                                        if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value2).Equals("Low"))
+                                        {
+                                            pivotTableData.Cells[i + 4, 6] = "Low";
+                                            pivotTableData.Cells[i + 4, 7] = "1";
+                                        }
+                                        if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value2).Equals("Medium"))
+                                        {
+                                            pivotTableData.Cells[i + 4, 6] = "Medium";
+                                            pivotTableData.Cells[i + 4, 7] = "2";
+                                        }
+                                        if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value2).Equals("High"))
+                                        {
+                                            pivotTableData.Cells[i + 4, 6] = "High";
+                                            pivotTableData.Cells[i + 4, 7] = "3";
+                                        }
+                                        if (Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value2).Equals("Critical") || Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 7].Value2).Equals("Serious"))
+                                        {
+                                            pivotTableData.Cells[i + 4, 6] = "Critical";
+                                            pivotTableData.Cells[i + 4, 7] = "4";
+                                        }
                                     }
 
                                     String[] parenthSplit = Convert.ToString(convertedCSVWorksheet.Cells[i + 1, 3].Value).Split('(');
